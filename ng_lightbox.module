@@ -103,13 +103,13 @@ function ng_lightbox_path_callback() {
   if (is_int($result)) {
     switch ($result) {
       case MENU_NOT_FOUND:
-        $result = array('#markup' => 'Page not found');
+        $result = array('#title' => t('Page not found'), '#markup' => t('Sorry, the content does not exist.'));
         break;
       case MENU_ACCESS_DENIED:
-        $result = array('#markup' => 'Access Denied');
+        $result = array('#title' => t('Access Denied'), '#markup' => t('Sorry, you do not have permission to view this content.'));
         break;
       case MENU_SITE_OFFLINE:
-        $result = array('#markup' => 'Service unavailable');
+        $result = array('#title' => t('Service unavailable'), '#markup' => t('Sorry, the service is currently unavailable'));
         break;
     }
   }
