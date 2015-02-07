@@ -1,0 +1,138 @@
+<?php
+
+/**
+ * @file
+ * The NG Lightbox module.
+ */
+
+/**
+ * Implements hook_preprocess_page().
+ */
+function ng_lightbox_preprocess_page(&$vars) {
+  drupal_add_library('system', 'drupal.ajax');
+  drupal_add_js(drupal_get_path('module', 'ng_lightbox') . '/js/ng-lightbox.js', array('every page' => TRUE));
+}
+
+/**
+ * Implements hook_theme_registry_alter().
+ */
+function ng_lightbox_theme_registry_alter(&$theme_registry) {
+  $theme_registry['link']['module'] = drupal_get_path('module', 'ng_lightbox');
+  $theme_registry['link']['function'] = 'ng_lightbox_link';
+}
+
+/**
+ * Implements theme_link().
+ */
+function ng_lightbox_link($vars) {
+  // If we want to skip admin paths and this path is admin, return theme link.
+  if (variable_get('ng_lightbox_skip_admin_paths', TRUE) && path_is_admin($vars['path'])) {
+    return theme_link($vars);
+  }
+
+  // If this path matches the patterns, add the lightbox.
+  if (drupal_match_path($vars['path'], variable_get('ng_lightbox_patterns', ''))) {
+    $vars['options']['attributes']['class'] =  isset($vars['options']['attributes']['class']) ? $vars['options']['attributes']['class'] + ['ng-lightbox'] : ['ng-lightbox'];
+  }
+
+  // Allow other modules to alter whether this link uses the lightbox. Helpful
+  // if you have admin paths disabled but what to enable it for certain ones or
+  // vice versa.
+  drupal_alter('ng_lightbox_ajax_path', $vars);
+
+  return theme_link($vars);
+}
+
+/**
+ * Implements hook_theme().
+ */
+function ng_lightbox_theme($existing, $type, $theme, $path) {
+  return array(
+    'ng_lightbox_form' => array(
+      'render element'  => 'element',
+      'template' => 'templates/ng-lightbox',
+    ),
+  );
+}
+
+/**
+ * Implements hook_permission().
+ */
+function ng_lightbox_permission() {
+  return array(
+    'administer ng lightbox' => array(
+      'title' => t('Administer NG Lightbox Paths'),
+      'description' => t('Perform administration tasks for NG Lightbox.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function ng_lightbox_menu() {
+  $items['ng-lightbox'] = array(
+    'title' => '',
+    'page callback' => 'ng_lightbox_path_callback',
+    'delivery callback' => 'ajax_deliver',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+  $items['admin/config/media/ng-lightbox'] = array(
+    'title' => 'NG Lightbox',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('ng_lightbox_settings'),
+    'access arguments' => array('administer ng lightbox'),
+    'description' => 'Configure the settings for NG Lightbox.',
+    'file' => 'ng_lightbox.admin.inc',
+  );
+  return $items;
+}
+
+/**
+ * Ajax callback for the ng_lightbox.
+ */
+function ng_lightbox_path_callback() {
+  global $base_path;
+  $url_parts = parse_url($_POST['ng_lightbox_path']);
+  $path = substr($url_parts['path'], strlen($base_path));
+  $path = drupal_get_normal_path($path) ?: $path;
+  $result = menu_execute_active_handler($path, FALSE);
+
+  // Integer results map to HTTP statuses.
+  if (is_int($result)) {
+    switch ($result) {
+      case MENU_NOT_FOUND:
+        $result = array('#markup' => 'Page not found');
+        break;
+      case MENU_ACCESS_DENIED:
+        $result = array('#markup' => 'Access Denied');
+        break;
+      case MENU_SITE_OFFLINE:
+        $result = array('#markup' => 'Service unavailable');
+        break;
+    }
+  }
+
+  // We need support strings inline with hook_menu().
+  if (is_string($result)) {
+    $html = $result;
+    $result = array('#markup' => $html);
+  }
+
+  // Setup our lightbox with some wrappers, default title and CSS.
+  $result['#theme_wrappers'][] = 'ng_lightbox_form';
+  $result['#title'] = isset($result['#title']) ? $result['#title'] : drupal_get_title();
+  $result['#modifier'] = isset($result['#modifier']) ? $result['#modifier'] : 'plain';
+  $result['#attached']['css'][] = drupal_get_path('module', 'ng_lightbox') . '/stylesheets/lightbox.css';
+
+  // http_build_url() would have been perfect but that lives in PECL.
+  $url = $url_parts['path'];
+  if (isset($url_parts['query'])) {
+    $url .= '?' . $url_parts['query'];
+  }
+  // We just set this regardless so forms have the right action.
+  $result['#action'] = $url;
+
+  return $result;
+}
