@@ -36,8 +36,14 @@
 
   Drupal.behaviors.ng_ajax_link = {
     attach: function (context, settings) {
+      var $body = $('body');
+      if (!$body.hasClass('ng-lightbox-ready')) {
+        $body.addClass('ng-lightbox-ready');
+        $body.append('<div id="ng-lightbox"></div>');
+      }
+
       $('.ng-lightbox:not(.ng-lightbox-processed)').addClass('ng-lightbox-processed').each(function () {
-        var base = 'content';
+        var base = 'ng-lightbox';
         var element_settings = {
           url: settings.basePath + 'ng-lightbox',
           event: 'click',
