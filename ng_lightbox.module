@@ -6,9 +6,9 @@
  */
 
 /**
- * Implements hook_preprocess_page().
+ * Implements hook_html_head_alter().
  */
-function ng_lightbox_preprocess_page(&$vars) {
+function ng_lightbox_preprocess_html(&$vars) {
   drupal_add_library('system', 'drupal.ajax');
   drupal_add_js(drupal_get_path('module', 'ng_lightbox') . '/js/ng-lightbox.js', array('every page' => TRUE));
 }
@@ -97,6 +97,13 @@ function ng_lightbox_path_callback() {
   $url_parts = parse_url($_POST['ng_lightbox_path']);
   $path = substr($url_parts['path'], strlen($base_path));
   $path = drupal_get_normal_path($path) ?: $path;
+
+  // We override these globals to make current_path() work and so that any
+  // forms that are rendered get the correct action set.
+  $_GET['q'] = ltrim($_POST['ng_lightbox_path'], '/');
+  $_SERVER['REQUEST_URI'] = $path;
+
+  // Execute the active menu handler.
   $result = menu_execute_active_handler($path, FALSE);
 
   // Integer results map to HTTP statuses.
