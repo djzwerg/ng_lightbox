@@ -22,7 +22,7 @@ $red: #E11B35;
 
   .lightbox__header {
     // Padding left for the icon.
-    padding: 20px 20px 20px 60px;
+    padding: 20px 20px 20px $lightbox-padding;
 
     // Negative margins to put the border at the edge because of the padding
     // on the container. Negative margin on the top to counter act the padding
