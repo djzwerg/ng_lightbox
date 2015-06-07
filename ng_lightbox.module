@@ -131,7 +131,11 @@ function ng_lightbox_path_callback() {
   $result['#theme_wrappers'][] = 'ng_lightbox_form';
   $result['#title'] = isset($result['#title']) ? $result['#title'] : drupal_get_title();
   $result['#modifier'] = isset($result['#modifier']) ? $result['#modifier'] : 'plain';
-  $result['#attached']['css'][] = drupal_get_path('module', 'ng_lightbox') . '/stylesheets/lightbox.css';
+
+  // If the default css is not disabled then add it.
+  if (!variable_get('ng_lightbox_disable_css', FALSE)) {
+    $result['#attached']['css'][] = drupal_get_path('module', 'ng_lightbox') . '/stylesheets/lightbox.css';
+  }
 
   // http_build_url() would have been perfect but that lives in PECL.
   $url = $url_parts['path'];
