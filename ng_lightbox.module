@@ -32,11 +32,17 @@ function ng_lightbox_link($vars) {
 
   // If this path matches the patterns, add the lightbox.
   if (drupal_match_path($vars['path'], variable_get('ng_lightbox_patterns', ''))) {
-    $vars['options']['attributes']['class'] =  isset($vars['options']['attributes']['class']) ? $vars['options']['attributes']['class'] + ['ng-lightbox'] : ['ng-lightbox'];
+    // Safety check if class isn't an array.
+    if (!isset($vars['options']['attributes']['class'])) {
+      $vars['options']['attributes']['class'] = array();
+    }
+
+    // Add our lightbox class.
+    $vars['options']['attributes']['class'][] = 'ng-lightbox';
   }
 
   // Allow other modules to alter whether this link uses the lightbox. Helpful
-  // if you have admin paths disabled but what to enable it for certain ones or
+  // if you have admin paths disabled but want to enable it for certain ones or
   // vice versa.
   drupal_alter('ng_lightbox_ajax_path', $vars);
 
