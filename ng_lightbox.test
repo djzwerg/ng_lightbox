@@ -89,7 +89,7 @@ class NgLightboxTest extends DrupalWebTestCase {
    *   The array of AJAX commands returned.
    */
   protected function simplePostAJAX($path, $post_array) {
-    $out = $this->curlExec(array(CURLOPT_URL => $this->getAbsoluteUrl($path), CURLOPT_POST => TRUE, CURLOPT_POSTFIELDS => $post_array, CURLOPT_HTTPHEADER => array()));
+    $out = $this->curlExec(array(CURLOPT_URL => url($path, array('absolute' => TRUE)), CURLOPT_POST => TRUE, CURLOPT_POSTFIELDS => $post_array, CURLOPT_HTTPHEADER => array()));
 
     $this->verbose('POST request to: ' . $path .
       '<hr />Ending URL: ' . $this->getUrl() .
