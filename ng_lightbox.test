@@ -54,8 +54,6 @@ class NgLightboxTest extends DrupalWebTestCase {
     global $base_path;
     $node_path = $base_path . 'node/' . $node->nid;
     $commands = $this->simplePostAJAX('ng-lightbox', array('ng_lightbox_path' => $node_path));
-    debug($commands);
-    debug($node_path);
     $this->assertContains($title, $commands[1]['data'], 'Valid node title is returned');
 
     // Assert a page which does not exist.
@@ -74,7 +72,7 @@ class NgLightboxTest extends DrupalWebTestCase {
 
     // Assert a form and that the #action is set correctly.
     $commands = $this->simplePostAJAX('ng-lightbox', array('ng_lightbox_path' => $node_path . '/edit'));
-    $this->assertContains('action="/node/1/edit"', $commands[1]['data'], 'Form has a valid form action.');
+    $this->assertContains('action="' . $base_path . 'node/1/edit"', $commands[1]['data'], 'Form has a valid form action.');
     $this->assertContains('page_node_form', $commands[1]['data'], 'Node edit form returned.');
   }
 
