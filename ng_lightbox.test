@@ -22,7 +22,7 @@ class NgLightboxTest extends DrupalWebTestCase {
    * {@inheritdoc}
    */
   public function setUp() {
-    parent::setUp(['ng_lightbox']);
+    parent::setUp(array('ng_lightbox'));
   }
 
   /**
@@ -130,4 +130,5 @@ class NgLightboxTest extends DrupalWebTestCase {
   protected function assertNotContains($needle, $haystack, $message = '') {
     return $this->assertTrue(stripos($haystack, $needle) === FALSE, $message);
   }
+
 }
