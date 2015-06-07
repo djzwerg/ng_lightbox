@@ -93,14 +93,23 @@ function ng_lightbox_menu() {
  * Ajax callback for the ng_lightbox.
  */
 function ng_lightbox_path_callback() {
+
+  // Currently we require a POST request, if you get here it's likely because
+  // something (maybe a form) accidently re-directed here.
+  if (!isset($_POST['ng_lightbox_path'])) {
+    return 'NG Lightbox error';
+  }
+  $lightbox_path = $_POST['ng_lightbox_path'];
   global $base_path;
-  $url_parts = parse_url($_POST['ng_lightbox_path']);
+
+  // Parse out the path parts intor a normalised Drupal path.
+  $url_parts = parse_url($lightbox_path);
   $path = substr($url_parts['path'], strlen($base_path));
   $path = drupal_get_normal_path($path) ?: $path;
 
   // We override these globals to make current_path() work and so that any
   // forms that are rendered get the correct action set.
-  $_GET['q'] = ltrim($_POST['ng_lightbox_path'], '/');
+  $_GET['q'] = $path;
   $_SERVER['REQUEST_URI'] = $path;
 
   // Execute the active menu handler.
@@ -121,7 +130,7 @@ function ng_lightbox_path_callback() {
     }
   }
 
-  // We need support strings inline with hook_menu().
+  // We need to support strings inline with cores hook_menu() implementation.
   if (is_string($result)) {
     $html = $result;
     $result = array('#markup' => $html);
