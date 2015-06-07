@@ -53,6 +53,7 @@ class NgLightboxTest extends DrupalWebTestCase {
     // Assert we have the node title for a valid node.
     $node_path = '/node/' . $node->nid;
     $commands = $this->simplePostAJAX('ng-lightbox', array('ng_lightbox_path' => $node_path));
+    debug($commands);
     $this->assertContains($title, $commands[1]['data'], 'Valid node title is returned');
 
     // Assert a page which does not exist.

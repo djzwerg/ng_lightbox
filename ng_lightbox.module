@@ -117,6 +117,7 @@ function ng_lightbox_path_callback() {
   // forms that are rendered get the correct action set.
   $_GET['q'] = $path;
   $_SERVER['REQUEST_URI'] = $path;
+  $_SERVER['SCRIPT_NAME'] = $path;
 
   // Execute the active menu handler.
   $result = menu_execute_active_handler($path, FALSE);
