@@ -31,7 +31,9 @@ function ng_lightbox_link($vars) {
   }
 
   // If this path matches the patterns, add the lightbox.
-  if (drupal_match_path($vars['path'], variable_get('ng_lightbox_patterns', ''))) {
+  // We filter out empty paths because some modules (such as Media) use
+  // theme_link() to generate links with empty paths.
+  if (!empty($vars['path']) && drupal_match_path($vars['path'], variable_get('ng_lightbox_patterns', ''))) {
     // Safety check if class isn't an array.
     if (!isset($vars['options']['attributes']['class'])) {
       $vars['options']['attributes']['class'] = array();
