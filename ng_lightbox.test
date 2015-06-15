@@ -76,6 +76,30 @@ class NgLightboxTest extends DrupalWebTestCase {
     $this->assertContains('page_node_form', $commands[1]['data'], 'Node edit form returned.');
   }
 
+
+  /**
+   * Test the pattern matching for link paths.
+   */
+  public function testPatternMatching() {
+    // Create a node to link to and add an alias for the node.
+    $alias = $this->randomName();
+    $node1 = $this->drupalCreateNode(array(
+      'path' => array('alias' => $alias))
+    );
+
+    // Only setting the aliased path should still match.
+    variable_set('ng_lightbox_patterns', $alias);
+
+    $this->assertContains('ng-lightbox', l('Normal Path', 'node/' . $node1->nid));
+    // The uppercase path should still be matched for a lightbox.
+    $this->assertContains('ng-lightbox', l('Uppercase Path', 'NODE/' . $node1->nid));
+    // The link with the path alias also works.
+    $this->assertContains('ng-lightbox', l('Aliased Path', $alias));
+
+    // The link with the empty path should never be matched.
+    $this->assertNotContains('ng-lightbox', l('Empty Path', ''));
+  }
+
   /**
    * We have a light-weight implementation of drupalPostAJAX() that works
    * without requiring a form.
@@ -112,6 +136,9 @@ class NgLightboxTest extends DrupalWebTestCase {
    *   TRUE if it was found otherwise FALSE.
    */
   protected function assertContains($needle, $haystack, $message = '') {
+    if (empty($message)) {
+      $message = t('%needle was found within %haystack', array('%needle' => $needle, '%haystack' => $haystack));
+    }
     return $this->assertTrue(stripos($haystack, $needle) !== FALSE, $message);
   }
 
@@ -129,6 +156,9 @@ class NgLightboxTest extends DrupalWebTestCase {
    *   TRUE if it was not found otherwise FALSE.
    */
   protected function assertNotContains($needle, $haystack, $message = '') {
+    if (empty($message)) {
+      $message = t('%needle was not found within %haystack', array('%needle' => $needle, '%haystack' => $haystack));
+    }
     return $this->assertTrue(stripos($haystack, $needle) === FALSE, $message);
   }
 

@@ -33,7 +33,7 @@ function ng_lightbox_link($vars) {
   // If this path matches the patterns, add the lightbox.
   // We filter out empty paths because some modules (such as Media) use
   // theme_link() to generate links with empty paths.
-  if (!empty($vars['path']) && drupal_match_path($vars['path'], variable_get('ng_lightbox_patterns', ''))) {
+  if (_ng_lightbox_check_path($vars['path'])) {
     // Safety check if class isn't an array.
     if (!isset($vars['options']['attributes']['class'])) {
       $vars['options']['attributes']['class'] = array();
@@ -49,6 +49,53 @@ function ng_lightbox_link($vars) {
   drupal_alter('ng_lightbox_ajax_path', $vars);
 
   return theme_link($vars);
+}
+
+/**
+ * Checks whether a give path matches the ng-lightbox path rules.
+ * This function checks both internal paths and aliased paths.
+ *
+ * @param string $path
+ *   The path to check.
+ *
+ * @return bool
+ *   TRUE if it matches the given rules.
+ */
+function _ng_lightbox_check_path($path) {
+  // We filter out empty paths because some modules (such as Media) use
+  // theme_link() to generate links with empty paths.
+  if (empty($path)) {
+    return FALSE;
+  }
+
+  // Normalise the path because Drupal does the same in the router.
+  $path = drupal_strtolower($path);
+
+  $matches = &drupal_static(__FUNCTION__);
+  if (isset($matches[$path])) {
+    return $matches[$path];
+  }
+
+  // Normalise the patterns as well so they match the normalised paths.
+  $patterns = drupal_strtolower(variable_get('ng_lightbox_patterns', ''));
+
+  // Check for internal paths first which is much quicker than the alias lookup.
+  if (drupal_match_path($path, $patterns)) {
+    $matches[$path] = TRUE;
+  }
+  else {
+    // Now check for aliases paths.
+    $aliased_path = drupal_strtolower(drupal_get_path_alias($path));
+    if ($path != $aliased_path && drupal_match_path($aliased_path, $patterns)) {
+      $matches[$path] = TRUE;
+    }
+    else {
+      // No match.
+      $matches[$path] = FALSE;
+    }
+  }
+
+  return $matches[$path];
 }
 
 /**
