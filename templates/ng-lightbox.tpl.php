@@ -15,7 +15,9 @@ $class_modifier = $element['#modifier'];
 
     <div class="lightbox__content">
       <h2 class="lightbox__header"><?php print $element['#title']; ?></h2>
-      <?php print $element['#children']; ?>
+      <div class="lightbox__body">
+        <?php print $element['#children']; ?>
+      </div>
     </div>
   </div>
 </div>

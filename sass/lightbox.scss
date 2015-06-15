@@ -1,12 +1,13 @@
 @import "compass/css3";
 
-$lightbox-padding: 40px;
-$gray: #6d6d6d;
-$gray-light-3: #DDD;
-$red: #E11B35;
-
 .lightbox {
-  .lightbox__overlay {
+
+  $lightbox-padding: 40px;
+  $gray: #6d6d6d;
+  $gray-light-3: #DDD;
+  $red: #E11B35;
+
+  &__overlay {
     @include transition(opacity 0.2s);
     position: fixed;
     top: 0;
@@ -20,15 +21,9 @@ $red: #E11B35;
     background: rgba(0, 0, 0, 0.5);
   }
 
-  .lightbox__header {
-    // Padding left for the icon.
-    padding: 20px 20px 20px $lightbox-padding;
-
-    // Negative margins to put the border at the edge because of the padding
-    // on the container. Negative margin on the top to counter act the padding
-    // bottom so we can use position centre for the bg image.
-    margin: -$lightbox-padding;
-    margin-bottom: 20px;
+  &__header {
+    padding: 20px;
+    margin: 0;
     border-bottom: 1px solid $gray-light-3;
 
     &:after {
@@ -46,13 +41,12 @@ $red: #E11B35;
   }
 
   // White box.
-  .lightbox__content {
+  &__content {
     @include box-shadow(0 0 40px 0px rgba(0, 0, 0, 0.2));
     @include border-radius(3px);
     @include box-sizing(border-box);
     background: #FFF;
     border: 0;
-    padding: $lightbox-padding;
     color: $gray;
 
     // Position.
@@ -65,6 +59,10 @@ $red: #E11B35;
     max-height: 100%;
     min-height: 200px;
     overflow-y: auto;
+  }
+
+  &__body {
+    padding: $lightbox-padding;
   }
 }
 
