@@ -31,8 +31,6 @@ function ng_lightbox_link($vars) {
   }
 
   // If this path matches the patterns, add the lightbox.
-  // We filter out empty paths because some modules (such as Media) use
-  // theme_link() to generate links with empty paths.
   if (_ng_lightbox_check_path($vars['path'])) {
     // Safety check if class isn't an array.
     if (!isset($vars['options']['attributes']['class'])) {
