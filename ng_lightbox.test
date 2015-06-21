@@ -105,6 +105,8 @@ class NgLightboxTest extends DrupalWebTestCase {
    * Test the pattern matching for link paths.
    */
   public function testPatternMatching() {
+    // Disable this since we'll technically be in the admin batch runner.
+    variable_set('ng_lightbox_skip_admin_paths', FALSE);
     // Create a node to link to and add an alias for the node.
     $alias = $this->randomName();
     $node1 = $this->drupalCreateNode(array(
