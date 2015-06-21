@@ -76,6 +76,30 @@ class NgLightboxTest extends DrupalWebTestCase {
     $this->assertContains('page_node_form', $commands[1]['data'], 'Node edit form returned.');
   }
 
+  /**
+   * Test that the lightbox is disabled on admin paths.
+   */
+  public function testAdminPathSetting() {
+    // Create an admin user and a test node.
+    $account = $this->drupalCreateUser(array('bypass node access', 'access content overview', 'view the administration theme'));
+    $this->drupalLogin($account);
+    $node = $this->drupalCreateNode();
+    variable_set('ng_lightbox_patterns', 'node/' . $node->nid . '/edit');
+
+    // Skip the admin paths, there should be no lightbox in the admin.
+    variable_set('ng_lightbox_skip_admin_paths', TRUE);
+    $this->drupalGet('admin/content');
+    $anchor = $this->xpath('//li[@class=:class]/a', array(':class' => 'edit first'));
+    $class = implode(' ', (array) $anchor[0]->attributes()->class);
+    $this->assertNotContains('ng-lightbox', $class, 'Edit link in admin does not have NG lightbox.');
+
+    // Now disable the setting and try again.
+    variable_set('ng_lightbox_skip_admin_paths', FALSE);
+    $this->drupalGet('admin/content');
+    $anchor = $this->xpath('//li[@class=:class]/a', array(':class' => 'edit first'));
+    $class = implode(' ', (array) $anchor[0]->attributes()->class);
+    $this->assertContains('ng-lightbox', $class, 'Edit link in admin is NG Lightbox enabled.');
+  }
 
   /**
    * Test the pattern matching for link paths.

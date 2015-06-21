@@ -25,11 +25,6 @@ function ng_lightbox_theme_registry_alter(&$theme_registry) {
  * Implements theme_link().
  */
 function ng_lightbox_link($vars) {
-  // If we want to skip admin paths and this path is admin, return theme link.
-  if (variable_get('ng_lightbox_skip_admin_paths', TRUE) && path_is_admin($vars['path'])) {
-    return theme_link($vars);
-  }
-
   // If this path matches the patterns, add the lightbox.
   if (_ng_lightbox_check_path($vars['path'])) {
     // Safety check if class isn't an array.
@@ -63,6 +58,11 @@ function _ng_lightbox_check_path($path) {
   // We filter out empty paths because some modules (such as Media) use
   // theme_link() to generate links with empty paths.
   if (empty($path)) {
+    return FALSE;
+  }
+
+  // If we want to skip admin paths and this path is admin, return theme link.
+  if (variable_get('ng_lightbox_skip_admin_paths', TRUE) && path_is_admin(current_path())) {
     return FALSE;
   }
 
