@@ -157,7 +157,13 @@ function ng_lightbox_path_callback() {
 
   // Parse out the path parts intor a normalised Drupal path.
   $url_parts = parse_url($lightbox_path);
-  $path = substr($url_parts['path'], strlen($base_path));
+  if (variable_get('clean_url', 0)) {
+    $path = substr($url_parts['path'], strlen($base_path));
+  }
+  else {
+    // Remove q= from the query string to get the path.
+    $path = substr($url_parts['query'], 2);
+  }
   $path = drupal_get_normal_path($path) ?: $path;
 
   // We override these globals to make current_path() work and so that any

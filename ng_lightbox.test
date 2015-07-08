@@ -22,6 +22,7 @@ class NgLightboxTest extends DrupalWebTestCase {
    * {@inheritdoc}
    */
   public function setUp() {
+    variable_set('clean_url', TRUE);
     parent::setUp(array('ng_lightbox'));
   }
 
@@ -55,6 +56,12 @@ class NgLightboxTest extends DrupalWebTestCase {
     $node_path = $base_path . 'node/' . $node->nid;
     $commands = $this->simplePostAJAX('ng-lightbox', array('ng_lightbox_path' => $node_path));
     $this->assertContains($title, $commands[1]['data'], 'Valid node title is returned');
+
+    // Test that is also works with clean_url switched off.
+    variable_set('clean_url', FALSE);
+    $commands = $this->simplePostAJAX('ng-lightbox', array('ng_lightbox_path' => $base_path . '?q=node/' . $node->nid));
+    $this->assertContains($title, $commands[1]['data'], 'Valid node title is returned');
+    variable_set('clean_url', TRUE);
 
     // Assert a page which does not exist.
     $commands = $this->simplePostAJAX('ng-lightbox', array('ng_lightbox_path' => $base_path . 'node/doesn-not-exist'));
