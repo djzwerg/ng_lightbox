@@ -23,7 +23,7 @@ class NgLightboxTest extends DrupalWebTestCase {
    */
   public function setUp() {
     variable_set('clean_url', TRUE);
-    parent::setUp(array('ng_lightbox'));
+    parent::setUp(array('ng_lightbox', 'ng_lightbox_test'));
   }
 
   /**
@@ -81,6 +81,13 @@ class NgLightboxTest extends DrupalWebTestCase {
     $commands = $this->simplePostAJAX('ng-lightbox', array('ng_lightbox_path' => $node_path . '/edit'));
     $this->assertContains('action="' . $base_path . 'node/1/edit"', $commands[1]['data'], 'Form has a valid form action.');
     $this->assertContains('page_node_form', $commands[1]['data'], 'Node edit form returned.');
+
+    // Ensure the query params are preserved to the lightbox request.
+    $random_1 = $this->randomName();
+    $random_2 = $this->randomName();
+    $commands = $this->simplePostAJAX('ng-lightbox', array('ng_lightbox_path' => $base_path . "ng-lightbox-test?p1=$random_1&p2=$random_2"));
+    $this->assertContains('[p1] => ' . $random_1, $commands[1]['data'], 'Query params are preserved.');
+    $this->assertContains('[p2] => ' . $random_2, $commands[1]['data'], 'Query params are preserved.');
   }
 
   /**

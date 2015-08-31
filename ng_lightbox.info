@@ -4,4 +4,4 @@ core = 7.x
 package = NG
 configure = admin/config/media/ng-lightbox
 
-files[] = ng_lightbox.test
+files[] = tests/ng_lightbox.test

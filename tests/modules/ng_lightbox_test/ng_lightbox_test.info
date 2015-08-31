@@ -1,0 +1,5 @@
+name = NG Lightbox Test
+description = Test module
+core = 7.x
+package = NG
+hidden = true

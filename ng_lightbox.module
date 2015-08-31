@@ -155,15 +155,24 @@ function ng_lightbox_path_callback() {
   $lightbox_path = $_POST['ng_lightbox_path'];
   global $base_path;
 
-  // Parse out the path parts intor a normalised Drupal path.
+  // Parse out the path parts and query string, taking into account clean urls
+  // and making sure to preserve query params for the next request.
   $url_parts = parse_url($lightbox_path);
+  if (isset($url_parts['query'])) {
+    parse_str($url_parts['query'], $query);
+    $_GET = $query;
+  }
+  // If clean urls are enabled, grab the path.
   if (variable_get('clean_url', 0)) {
     $path = substr($url_parts['path'], strlen($base_path));
   }
   else {
-    // Remove q= from the query string to get the path.
-    $path = substr($url_parts['query'], 2);
+    // Clean urls are disabled so we're using the "q" param. We know we have
+    // $query because clean_urls are off, otherwise something went very wrong.
+    $path = $query['q'];
   }
+
+  // Normalize the path for Drupal.
   $path = drupal_get_normal_path($path) ?: $path;
 
   // We override these globals to make current_path() work and so that any
