@@ -32,6 +32,13 @@ class NgLightboxTest extends DrupalWebTestCase {
   public function testNgLightbox() {
     $title = $this->randomName();
     $node = $this->drupalCreateNode(array('promote' => 1, 'title' => $title));
+    $latin_title = 'my stupid random title'; //$this->randomName();
+    $latin_path = 'йцйцйц';
+    $latin_node = $this->drupalCreateNode(array(
+      'promote' => 1,
+      'title' => $latin_title,
+      'path' => array('alias' => $latin_path),
+    ));
 
     // Go to the homepage which will link to the new nodes.
     $this->drupalGet('node');
@@ -42,7 +49,7 @@ class NgLightboxTest extends DrupalWebTestCase {
     $this->assertNotContains('ng-lightbox', $class, 'Read more link does not have ng-lightbox class');
 
     // Enable the lightbox for our new node.
-    variable_set('ng_lightbox_patterns', 'node/' . $node->nid);
+    variable_set('ng_lightbox_patterns', 'node/' . $node->nid . "\n$latin_path");
 
     // Refresh the page and assert the read more link now has the ng-lightbox
     // class.
@@ -56,6 +63,10 @@ class NgLightboxTest extends DrupalWebTestCase {
     $node_path = $base_path . 'node/' . $node->nid;
     $commands = $this->simplePostAJAX('ng-lightbox', array('ng_lightbox_path' => $node_path));
     $this->assertContains($title, $commands[1]['data'], 'Valid node title is returned');
+
+    // Assert paths with latin characters work.
+    $commands = $this->simplePostAJAX('ng-lightbox', array('ng_lightbox_path' => $base_path . urlencode($latin_path)));
+    $this->assertContains($latin_title, $commands[1]['data'], 'Valid node title is returned');
 
     // Test that is also works with clean_url switched off.
     variable_set('clean_url', FALSE);

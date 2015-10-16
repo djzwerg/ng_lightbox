@@ -172,6 +172,9 @@ function ng_lightbox_path_callback() {
     $path = $query['q'];
   }
 
+  // Decode the path to ensure everything works with non-latin characters.
+  $path = urldecode($path);
+
   // Normalize the path for Drupal.
   $path = drupal_get_normal_path($path) ?: $path;
 
