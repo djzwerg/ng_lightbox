@@ -70,13 +70,15 @@
       Drupal.ajax[this.lightboxId] = new Drupal.ajax(this.lightboxId, element, element_settings);
       $element.addClass(this.processed);
 
-      // Override the Drupal.ajax success callback so we can do things when NG Lightbox has loaded.
+      // Override the Drupal.ajax success callback so we can do things when
+      // NG Lightbox has loaded.
       var successCallback = Drupal.ajax[this.lightboxId].options.success;
-      Drupal.ajax[this.lightboxId].options.success = function(response, status) {
-        successCallback(response, status);
+      Drupal.ajax[this.lightboxId].options.success = function(response, status, xmlhttprequest) {
+        successCallback(response, status, xmlhttprequest);
 
-        // Attempt to set focus on the first input within the lightbox since forms are common. However
-        // this is harmless if there are no forms and we fire an additional event for others.
+        // Attempt to set focus on the first input within the lightbox since
+        // forms are common. However this is harmless if there are no forms and
+        // we fire an additional event for others.
         var $lightbox = $('#' + NGLightbox.lightboxId);
         $lightbox.find('input').first().focus();
         $lightbox.trigger('ng-lightbox-loaded');
