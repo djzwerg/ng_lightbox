@@ -82,6 +82,9 @@
         var $lightbox = $('#' + NGLightbox.lightboxId);
         $lightbox.find('input').first().focus();
         $lightbox.trigger('ng-lightbox-loaded');
+
+        // Attach the behaviours.
+        Drupal.attachBehaviors($lightbox.get(0), Drupal.settings);
       };
     },
 
