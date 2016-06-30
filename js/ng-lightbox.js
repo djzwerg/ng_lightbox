@@ -73,6 +73,13 @@
       // Add the Drupal.ajax success callback so we can do things when
       // NG Lightbox has loaded.
       Drupal.ajax[this.lightboxId].success = function(response, status) {
+        var $current = $(window).scrollTop(),
+            $document = $(document);
+
+        $document.bind('scroll.lightbox', function () {
+          $document.scrollTop($current);
+        });
+
         // Call the global prototype method.
         Drupal.ajax.prototype.success.call(this, response, status);
 
@@ -98,6 +105,7 @@
       $('body').removeClass('lock');
       $element.addClass('ng-hidden');
       $('#' + this.lightboxId).empty();
+      $(document).unbind('.lightbox');
     },
 
     /**
