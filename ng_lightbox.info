@@ -1,7 +1,14 @@
+type = module
 name = NG Lightbox
 description = A path based lightbox solution using CSS 3 properties.
-core = 7.x
-package = NG
+package = Media
+version = VERSION
+backdrop = 1.x
+
 configure = admin/config/media/ng-lightbox
 
-files[] = tests/ng_lightbox.test
+function hook_autoload_info() {
+  return array(
+    'ClassName' => 'tests/ng_lightbox.test',
+  );
+}
