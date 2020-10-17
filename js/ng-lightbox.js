@@ -4,7 +4,7 @@
   /**
    * Setup NG Lightbox and apply to the appropriate elements.
    */
-  Drupal.behaviors.ng_lightbox = {
+  Backdrop.behaviors.ng_lightbox = {
     attach: function (context, settings) {
 
       // Setup the first time.
@@ -57,9 +57,9 @@
         path = $element.attr('href');
       }
 
-      // Setup the AJAX settings for Drupal.ajax.
+      // Setup the AJAX settings for Backdrop.ajax.
       var element_settings = {
-        url: Drupal.settings.basePath + 'ng-lightbox',
+        url: Backdrop.settings.basePath + 'ng-lightbox',
         event: 'click',
         wrapper: this.lightboxId,
         method: 'append',
@@ -67,12 +67,12 @@
           ng_lightbox_path: path
         }
       };
-      Drupal.ajax[this.lightboxId] = new Drupal.ajax(this.lightboxId, element, element_settings);
+      Backdrop.ajax[this.lightboxId] = new Backdrop.ajax(this.lightboxId, element, element_settings);
       $element.addClass(this.processed);
 
-      // Add the Drupal.ajax success callback so we can do things when
+      // Add the Backdrop.ajax success callback so we can do things when
       // NG Lightbox has loaded.
-      Drupal.ajax[this.lightboxId].success = function(response, status) {
+      Backdrop.ajax[this.lightboxId].success = function(response, status) {
         var $current = $(window).scrollTop(),
             $document = $(document);
 
@@ -81,7 +81,7 @@
         });
 
         // Call the global prototype method.
-        Drupal.ajax.prototype.success.call(this, response, status);
+        Backdrop.ajax.prototype.success.call(this, response, status);
 
         // Attempt to set focus on the first input within the lightbox since
         // forms are common. However this is harmless if there are no forms and
@@ -91,7 +91,7 @@
         $lightbox.trigger('ng-lightbox-loaded');
 
         // Attach the behaviours.
-        Drupal.attachBehaviors($lightbox.get(0), Drupal.settings);
+        Backdrop.attachBehaviors($lightbox.get(0), Backdrop.settings);
       };
     },
 
