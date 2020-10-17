@@ -1,7 +1,8 @@
 {
   "_config_name": "ng_lightbox.settings",
-  "setting_one": "skip_admin_paths",
-  "setting_two": "disable_css",
-  "array_one": ["TRUE", "FALSE"],
+  "setting_one": "patterns",
+  "setting_two": "skip_admin_paths",
+  "setting_three": "disable_css",
+  "array_one": ["", "TRUE", "FALSE"],
   "empty_array": []
 }

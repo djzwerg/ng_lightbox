@@ -62,7 +62,7 @@ function _ng_lightbox_check_path($path) {
   }
 
   // If we want to skip admin paths and this path is admin, return theme link.
-  if (config_get('ng_lightbox.settings', 'ng_lightbox_skip_admin_paths', TRUE) && path_is_admin(current_path())) {
+  if (config_get('ng_lightbox.settings', 'skip_admin_paths', TRUE) && path_is_admin(current_path())) {
     return FALSE;
   }
 
@@ -75,7 +75,7 @@ function _ng_lightbox_check_path($path) {
   }
 
   // Normalise the patterns as well so they match the normalised paths.
-  $patterns = backdrop_strtolower(config_get('ng_lightbox.settings', 'ng_lightbox_patterns', ''));
+  $patterns = backdrop_strtolower(config_get('ng_lightbox.settings', 'patterns', ''));
 
   // Check for internal paths first which is much quicker than the alias lookup.
   if (backdrop_match_path($path, $patterns)) {
@@ -214,7 +214,7 @@ function ng_lightbox_path_callback() {
   $result['#modifier'] = isset($result['#modifier']) ? $result['#modifier'] : 'plain';
 
   // If the default css is not disabled then add it.
-  if (!config_get('ng_lightbox.settings', 'ng_lightbox_disable_css', FALSE)) {
+  if (!config_get('ng_lightbox.settings', 'disable_css', FALSE)) {
     $result['#attached']['css'][] = backdrop_get_path('module', 'ng_lightbox') . '/css/lightbox.css';
   }
 
