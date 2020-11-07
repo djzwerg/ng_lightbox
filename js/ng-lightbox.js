@@ -4,7 +4,7 @@
   /**
    * Setup NG Lightbox and apply to the appropriate elements.
    */
-  Backdrop.behaviors.ng_lightbox = {
+  backdrop.behaviors.ng_lightbox = {
     attach: function (context, settings) {
 
       // Setup the first time.

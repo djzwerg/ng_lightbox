@@ -8,7 +8,7 @@
 /**
  * Implements hook_html_head_alter().
  */
-function ng_lightbox_preprocess_html(&$vars) {
+function ng_lightbox_preprocess_page(&$vars) {
   backdrop_add_library('system', 'backdrop.ajax');
   backdrop_add_js(backdrop_get_path('module', 'ng_lightbox') . '/js/ng-lightbox.js', array('every page' => TRUE));
 }
@@ -19,6 +19,7 @@ function ng_lightbox_preprocess_html(&$vars) {
 function ng_lightbox_theme_registry_alter(&$theme_registry) {
   $theme_registry['link']['module'] = backdrop_get_path('module', 'ng_lightbox');
   $theme_registry['link']['function'] = 'ng_lightbox_link';
+  $theme_registry['link']['theme path'] = backdrop_get_path('module', 'ng_lightbox');
 }
 
 /**
@@ -163,7 +164,7 @@ function ng_lightbox_path_callback() {
     $_GET = $query;
   }
   // If clean urls are enabled, grab the path.
-  if (config_get('ng_lightbox.settings', 'clean_url', 0)) {
+  if (config_get('system.core', 'clean_url', 0)) {
     $path = substr($url_parts['path'], strlen($base_path));
   }
   else {
